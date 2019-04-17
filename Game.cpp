@@ -62,7 +62,20 @@ void Game::Update(DX::StepTimer const& timer)
     float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
-    elapsedTime;
+	elapsedTime;
+
+	float time = float(timer.GetTotalSeconds());
+
+	m_world = Matrix::Identity
+		* Matrix::CreateRotationY(XMConvertToRadians(time * 64))
+		* Matrix::CreateRotationX(XMConvertToRadians(time * 64))
+		;
+
+	Vector3 camPos = Vector3(0.f, 0.f, 3.f);
+	//camPos.z += time;
+
+	// ビュー行列を作成する。
+	m_view = Matrix::CreateLookAt(camPos, Vector3::Zero, Vector3::UnitY);
 }
 #pragma endregion
 
@@ -180,8 +193,6 @@ void Game::CreateDeviceDependentResources()
 	m_model = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
 	// ワールド行列を作成する。
 	m_world = Matrix::Identity;
-	// ビュー行列を作成する。
-	m_view = Matrix::CreateLookAt(Vector3(3.f, 0.f, 2.f), Vector3::Zero, Vector3::UnitY);
 	
 	// 画面のサイズを取得する
 	CreateWindowSizeDependentResources();
