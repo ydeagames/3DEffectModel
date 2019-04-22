@@ -67,11 +67,14 @@ void Game::Update(DX::StepTimer const& timer)
 	float time = float(timer.GetTotalSeconds());
 
 	m_world = Matrix::Identity
-		* Matrix::CreateRotationY(XMConvertToRadians(time * 64))
-		* Matrix::CreateRotationX(XMConvertToRadians(time * 64))
+		* Matrix::CreateScale(Vector3::One * 5.f)
+		* Matrix::CreateRotationY(XMConvertToRadians(90))
+		* Matrix::CreateRotationX(time + XMConvertToRadians(90))
+		* Matrix::CreateTranslation(Vector3::Forward * 5.f)
+		* Matrix::CreateRotationY(time)
 		;
 
-	Vector3 camPos = Vector3(0.f, 0.f, 3.f);
+	Vector3 camPos = Vector3(0.f, 0.f, 12.f);
 	//camPos.z += time;
 
 	// ビュー行列を作成する。
@@ -208,7 +211,7 @@ void Game::CreateWindowSizeDependentResources()
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
 	// 射影行列を取得する
-	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f, float(backBufferWidth) / float(backBufferHeight), .1f, 10.f);
+	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f, float(backBufferWidth) / float(backBufferHeight), .1f, 100.f);
 }
 
 void Game::OnDeviceLost()

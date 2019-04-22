@@ -186,10 +186,10 @@
     <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="directx.ico" />
+    <Manifest Include="settings.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="settings.manifest" />
+    <Image Include="directx.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
