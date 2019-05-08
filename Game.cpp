@@ -23,6 +23,8 @@ Game::Game() noexcept(false)
 {
     m_deviceResources = std::make_unique<DX::DeviceResources>();
     m_deviceResources->RegisterDeviceNotify(this);
+
+	m_modelObject = std::make_unique<ModelObject>();
 }
 
 // Initialize the Direct3D resources required to run.
@@ -64,17 +66,10 @@ void Game::Update(DX::StepTimer const& timer)
     // TODO: Add your game logic here.
 	elapsedTime;
 
-	float time = float(timer.GetTotalSeconds());
-
-	m_world = Matrix::Identity
-		* Matrix::CreateScale(Vector3::One * 5.f)
-		* Matrix::CreateRotationY(XMConvertToRadians(90))
-		* Matrix::CreateRotationX(time + XMConvertToRadians(90))
-		* Matrix::CreateTranslation(Vector3::Forward * 5.f)
-		* Matrix::CreateRotationY(time)
-		;
-
 	Vector3 camPos = Vector3(0.f, 0.f, 12.f);
+
+	m_modelObject->Update(timer);
+
 	//camPos.z += time;
 
 	// ビュー行列を作成する。
@@ -100,7 +95,7 @@ void Game::Render()
     // TODO: Add your rendering code here.
     context;
 
-	m_model->Draw(context, *m_states, m_world, m_view, m_proj);
+	m_modelObject->Render(m_view, m_proj);
 
     m_deviceResources->PIXEndEvent();
 
@@ -188,14 +183,7 @@ void Game::CreateDeviceDependentResources()
     // TODO: Initialize device dependent objects here (independent of window size).
     device;
 
-	// コモンステートを作成する
-	m_states = std::make_unique<CommonStates>(device);
-	// エフェクトファクトリーを作成する
-	m_fxFactory = std::make_unique<EffectFactory>(device);
-	// CMOを読み込んでモデルを作成する
-	m_model = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	// ワールド行列を作成する。
-	m_world = Matrix::Identity;
+	m_modelObject->Create(m_deviceResources.get());
 	
 	// 画面のサイズを取得する
 	CreateWindowSizeDependentResources();
@@ -218,9 +206,10 @@ void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
 	// TODO: OnDeviceLostは呼ばれない！
-	m_states.reset();
-	m_fxFactory.reset();
-	m_model.reset();
+	//m_states.reset();
+	//m_fxFactory.reset();
+	//m_model.reset();
+	m_modelObject->Lost();
 }
 
 void Game::OnDeviceRestored()
