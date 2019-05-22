@@ -10,6 +10,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 ModelObject::ModelObject()
+	: m_sharedModel(std::make_shared<std::unique_ptr<SharedModel>>(std::unique_ptr<SharedModel>(nullptr)))
 {
 }
 
@@ -21,24 +22,29 @@ void ModelObject::Update(DX::StepTimer const& timer)
 {
 	Matrix scale = Matrix::CreateScale(Vector3::One * 5.f);
 
-	// 例の動き
-	float time = float(timer.GetTotalSeconds());
-	m_world = scale
-		* Matrix::CreateRotationY(XMConvertToRadians(90))
-		* Matrix::CreateRotationX(time + XMConvertToRadians(90))
-		* Matrix::CreateTranslation(Vector3::Forward * 5.f)
-		* Matrix::CreateRotationY(time)
-		;
+	m_world = transform->GetMatrix(timer);
 }
 
 void ModelObject::Lost()
 {
-	m_states.reset();
-	m_fxFactory.reset();
-	m_model.reset();
+	m_sharedModel = nullptr;
 }
 
-void ModelObject::Create(DX::DeviceResources* deviceResources)
+void ModelObject::Create(DX::DeviceResources* deviceResources, const std::wstring& modelName)
+{
+	std::unique_ptr<SharedModel>& sharedModel = *m_sharedModel;
+	if (!sharedModel)
+		sharedModel = std::make_unique<SharedModel>(deviceResources, modelName);
+}
+
+void ModelObject::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+{
+	// 引数でビュー行列とプロジェクション行列をもらう
+	ID3D11DeviceContext1* context = (*m_sharedModel)->m_deviceResources->GetD3DDeviceContext();
+	(*m_sharedModel)->m_model->Draw(context, *(*m_sharedModel)->m_states, m_world, view, proj);
+}
+
+ModelObject::SharedModel::SharedModel(DX::DeviceResources* deviceResources, const std::wstring& modelName)
 {
 	m_deviceResources = deviceResources;
 
@@ -49,20 +55,12 @@ void ModelObject::Create(DX::DeviceResources* deviceResources)
 	// エフェクトファクトリーを作成する
 	m_fxFactory = std::make_unique<EffectFactory>(device);
 	// CMOを読み込んでモデルを作成する
-	m_model = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	// ワールド行列を作成する。
-	m_world = Matrix::Identity;
-
-	//モデルオブジェクトでやるべきではない
-	//m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
-	// Vector3::Zero, Vector3::UnitY);
-	//m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
-	//	float(backBufferWidth) / float(backBufferHeight), 0.1f, 10.f);
+	m_model = Model::CreateFromCMO(device, modelName.c_str(), *m_fxFactory);
 }
 
-void ModelObject::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+ModelObject::SharedModel::~SharedModel()
 {
-	// 引数でビュー行列とプロジェクション行列をもらう
-	ID3D11DeviceContext1* context = m_deviceResources->GetD3DDeviceContext();
-	m_model->Draw(context, *m_states, m_world, view, proj);
+	m_states.reset();
+	m_fxFactory.reset();
+	m_model.reset();
 }

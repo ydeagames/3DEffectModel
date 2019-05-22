@@ -12,7 +12,10 @@
 #include <CommonStates.h>
 #include <Model.h>
 
-#include "ModelObject.h"
+//class ModelObject;
+class MyEffect;
+class GridFloor;
+class DebugCamera;
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -20,7 +23,8 @@ class Game : public DX::IDeviceNotify
 {
 public:
 
-    Game() noexcept(false);
+	Game() noexcept(false);
+	~Game() noexcept(false);
 
     // Initialization and management
     void Initialize(HWND window, int width, int height);
@@ -67,5 +71,17 @@ private:
 	//std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;
 	//std::unique_ptr<DirectX::Model> m_model;
 
-	std::unique_ptr<ModelObject> m_modelObject;
+	//std::vector<std::unique_ptr<ModelObject>> m_modelObjects;
+
+	// マウス
+	std::unique_ptr<DirectX::Mouse>			m_pMouse;
+	// キーボード
+	std::unique_ptr<DirectX::Keyboard>		m_pKeyboard;
+
+	std::unique_ptr<DirectX::CommonStates> m_commonStates;
+
+	std::unique_ptr<MyEffect> m_myEffect;
+
+	std::unique_ptr<DebugCamera> m_debugCamera;
+	std::unique_ptr<GridFloor> m_gridFloor;
 };
