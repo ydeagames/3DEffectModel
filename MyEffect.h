@@ -35,8 +35,11 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// テクスチャハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+public:
 	DirectX::SimpleMath::Vector3 m_position;
 	DirectX::SimpleMath::Vector3 m_velocity;
+	DirectX::SimpleMath::Vector3 m_acceleration;
 	DirectX::SimpleMath::Vector3 m_camera;
+private:
 	float m_life;
 };

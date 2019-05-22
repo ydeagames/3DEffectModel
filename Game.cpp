@@ -87,6 +87,10 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_view = Matrix::CreateLookAt(camPos, Vector3::Zero, Vector3::UnitY);
 	m_view = m_debugCamera->getViewMatrix();
 
+	m_myEffect->m_acceleration = m_myEffect->m_position;
+	m_myEffect->m_acceleration.Normalize();
+	m_myEffect->m_acceleration *= -.001f;
+
 	m_myEffect->SetRenderState(camPos, m_view, m_proj);
 	m_myEffect->Update(timer);
 }
@@ -205,7 +209,7 @@ void Game::CreateDeviceDependentResources()
 
 	m_gridFloor = std::make_unique<GridFloor>(device, context, m_commonStates.get(), 10, 10);
 
-	m_myEffect->Create(m_deviceResources.get());
+	m_myEffect->Create(m_deviceResources.get(), 100.f, Vector3::Right * 1.f, Vector3::Right * -.01f);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

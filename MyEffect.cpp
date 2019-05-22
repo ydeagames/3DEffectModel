@@ -42,6 +42,7 @@ void MyEffect::Update(DX::StepTimer timer)
 {
 	float time = float(m_timer.GetElapsedSeconds());
 	m_timer = timer;
+	m_velocity += m_acceleration;
 	m_position += m_velocity;
 	m_life -= time;
 }
