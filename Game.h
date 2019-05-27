@@ -13,7 +13,7 @@
 #include <Model.h>
 
 //class ModelObject;
-class MyEffect;
+class EffectManager;
 class GridFloor;
 class DebugCamera;
 
@@ -80,7 +80,7 @@ private:
 
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
 
-	std::unique_ptr<MyEffect> m_myEffect;
+	std::unique_ptr<EffectManager> m_effectManager;
 
 	std::unique_ptr<DebugCamera> m_debugCamera;
 	std::unique_ptr<GridFloor> m_gridFloor;

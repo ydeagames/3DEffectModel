@@ -22,6 +22,7 @@
     <ClInclude Include="MyEffect.h" />
     <ClInclude Include="GridFloor.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="EffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="MyEffect.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="GridFloor.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

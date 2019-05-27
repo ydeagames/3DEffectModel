@@ -6,7 +6,7 @@
 #include "Game.h"
 
 //#include "ModelObject.h"
-#include "MyEffect.h"
+#include "EffectManager.h"
 
 #include "DebugCamera.h"
 #include "GridFloor.h"
@@ -24,7 +24,7 @@ Game::Game() noexcept(false)
 	m_deviceResources = std::make_unique<DX::DeviceResources>();
 	m_deviceResources->RegisterDeviceNotify(this);
 
-	m_myEffect = std::make_unique<MyEffect>();
+	m_effectManager = std::make_unique<EffectManager>();
 	m_debugCamera = std::make_unique<DebugCamera>();
 }
 
@@ -49,6 +49,8 @@ void Game::Initialize(HWND window, int width, int height)
 
 	m_deviceResources->CreateWindowSizeDependentResources();
 	CreateWindowSizeDependentResources();
+
+	m_effectManager->Initialize(100, Vector3::Zero);
 
 	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
 	// e.g. for 60 FPS fixed timestep update logic, call:
@@ -87,12 +89,12 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_view = Matrix::CreateLookAt(camPos, Vector3::Zero, Vector3::UnitY);
 	m_view = m_debugCamera->getViewMatrix();
 
-	m_myEffect->m_acceleration = m_myEffect->m_position;
-	m_myEffect->m_acceleration.Normalize();
-	m_myEffect->m_acceleration *= -.001f;
+	//m_myEffect->m_acceleration = m_myEffect->m_position;
+	//m_myEffect->m_acceleration.Normalize();
+	//m_myEffect->m_acceleration *= -.001f;
 
-	m_myEffect->SetRenderState(camPos, m_view, m_proj);
-	m_myEffect->Update(timer);
+	m_effectManager->SetRenderState(camPos, m_view, m_proj);
+	m_effectManager->Update(timer);
 }
 #pragma endregion
 
@@ -116,7 +118,7 @@ void Game::Render()
 
 	m_gridFloor->draw(context, m_view, m_proj);
 
-	m_myEffect->Render();
+	m_effectManager->Render();
 
 	m_deviceResources->PIXEndEvent();
 
@@ -209,7 +211,7 @@ void Game::CreateDeviceDependentResources()
 
 	m_gridFloor = std::make_unique<GridFloor>(device, context, m_commonStates.get(), 10, 10);
 
-	m_myEffect->Create(m_deviceResources.get(), 100.f, Vector3::Right * 1.f, Vector3::Right * -.01f);
+	m_effectManager->Create(m_deviceResources.get());
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
