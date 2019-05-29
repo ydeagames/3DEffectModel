@@ -211,7 +211,7 @@ void Game::CreateDeviceDependentResources()
 
 	m_gridFloor = std::make_unique<GridFloor>(device, context, m_commonStates.get(), 10, 10);
 
-	m_effectManager->Create(m_deviceResources.get());
+	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/image01.png");
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

@@ -16,7 +16,7 @@
 class EffectManager
 {
 public:
-	void Create(DX::DeviceResources* deviceResources);
+	void Create(DX::DeviceResources* deviceResources, const std::wstring& image);
 	//Create()で全部処理は長いので分割
 	void Initialize(float life,DirectX::SimpleMath::Vector3 pos);
 
@@ -35,7 +35,9 @@ private:
 
 
 	//エフェクトのポインタ
-	MyEffect*	m_effect;
+	//MyEffect*	m_effect;
+	//エフェクトリスト
+	std::list<MyEffect*> m_effectList;
 
 	//テクスチャデータ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	m_texture;
