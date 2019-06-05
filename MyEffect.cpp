@@ -38,8 +38,8 @@ void MyEffect::Create(DX::DeviceResources* deviceResources,ID3D11ShaderResourceV
 void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity)
 {
 	m_startPosition = m_position = pos;
-	velocity.Normalize();
-	velocity *= .04f;
+	//velocity.Normalize();
+	//velocity *= .04f;
 	m_startVelocity = m_velocity = velocity;
 	m_startLife = m_life = life;
 
@@ -81,8 +81,8 @@ void MyEffect::Render()
 	//auto sizeOverLifetime = 1 - (1 - m_life / m_startLife) * (1 - m_life / m_startLife);
 	//Vector3 length = m_position - m_startPosition;
 	//auto sizeOverLength = 1 - length.LengthSquared() / (4 * 4);
-	m_world = Matrix::CreateScale(1)* Matrix::CreateRotationY(XMConvertToRadians(180)) * Matrix::CreateBillboard(m_position, Vector3::Zero, Vector3::UnitY) ;
-	//m_world = Matrix::CreateBillboard(m_position, m_camera, Vector3::UnitY) ;
+	//m_world = Matrix::CreateScale(1)* Matrix::CreateRotationY(XMConvertToRadians(180)) * Matrix::CreateBillboard(m_position, Vector3::Zero, Vector3::UnitY) ;
+	m_world = Matrix::CreateBillboard(m_position, m_camera, Vector3::UnitY) ;
 	Draw();
 
 }

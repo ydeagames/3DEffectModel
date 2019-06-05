@@ -51,8 +51,8 @@ void Game::Initialize(HWND window, int width, int height)
 	CreateWindowSizeDependentResources();
 
 	//m_effectManager->Initialize(1, Vector3::Zero);
-	m_effectManager->InitializeAverage(1, Vector3::Zero);
-	//m_effectManager->InitializeCone(1, Vector3::Zero, Vector3::Up);
+	//m_effectManager->InitializeAverage(1, Vector3::Zero);
+	m_effectManager->InitializeCone(1, Vector3::Zero, Vector3::Up);
 
 	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
 	// e.g. for 60 FPS fixed timestep update logic, call:
@@ -213,7 +213,7 @@ void Game::CreateDeviceDependentResources()
 
 	m_gridFloor = std::make_unique<GridFloor>(device, context, m_commonStates.get(), 10, 10);
 
-	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/image01.png");
+	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/shadow.png");
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

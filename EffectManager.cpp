@@ -100,6 +100,7 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 	const float RAD = XM_PI * 2;
 
 	dir.Normalize();
+	dir *= .04f;
 
 	auto cross0 = Vector3(dir.y, -dir.x, 0); // 直交するベクトル
 
@@ -114,8 +115,11 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 		auto cross = cross0;
 		cross *= sinf(rand());
 
+		d += cross;
+		d *= .1f;
+
 		//life,pos,vel の値でm_effectを初期化する
-		(*itr)->Initialize(life, pos, d + cross);
+		(*itr)->Initialize(life, pos, d);
 		num++;
 	}
 }
