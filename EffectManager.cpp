@@ -22,10 +22,10 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const std::wst
 
 	//プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
-	
+
 	//テクスチャのロード
 	CreateWICTextureFromFile(device, image.c_str(), nullptr, m_texture.GetAddressOf());
-	
+
 	// エフェクトクリア
 	m_effectList.clear();
 
@@ -33,15 +33,19 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const std::wst
 	{
 		// エフェクト
 		auto effect = new MyEffect();
-		effect->Create(deviceResources,m_texture.Get(),m_batchEffect.get(),m_batch.get(),m_inputLayout.Get());
+		effect->Create(deviceResources, m_texture.Get(), m_batchEffect.get(), m_batch.get(), m_inputLayout.Get());
 		// エフェクト登録
 		m_effectList.push_back(effect);
 	}
 }
 
-void EffectManager::Initialize(float life,Vector3 pos)
+void EffectManager::Initialize(float life, Vector3 pos)
 {
+	//const float RAD = XM_PI * 2;
+
+	int num = 0;
 	int range = 100;
+	//int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
 	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
 	{
 		Vector3 vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
@@ -50,8 +54,69 @@ void EffectManager::Initialize(float life,Vector3 pos)
 			vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
 		}
 
+		//int size = sqrSize;
+
+		//float alpha = RAD * (num / size) / sqrSize;
+		//float phi = RAD * (num % size) / sqrSize;
+		////Vector3 vel = Vector3(cos(alpha), sin(alpha), 0.f);
+		//Vector3 vel = Vector3(sin(alpha) * cos(phi), sin(alpha) * sin(phi), cos(alpha));
+
 		//life,pos,vel の値でm_effectを初期化する
 		(*itr)->Initialize(life, pos, vel);
+		num++;
+	}
+}
+
+void EffectManager::InitializeAverage(float life, Vector3 pos)
+{
+	const float RAD = XM_PI * 2;
+
+	int num = 0;
+	//int range = 100;
+	int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
+	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
+	{
+		//Vector3 vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
+		//while (vel.Length() < 0.03f)
+		//{
+		//	vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
+		//}
+
+		int size = sqrSize;
+
+		float alpha = RAD * (num / size) / sqrSize;
+		float phi = RAD * (num % size) / sqrSize;
+		//Vector3 vel = Vector3(cos(alpha), sin(alpha), 0.f);
+		Vector3 vel = Vector3(sin(alpha) * cos(phi), sin(alpha) * sin(phi), cos(alpha));
+
+		//life,pos,vel の値でm_effectを初期化する
+		(*itr)->Initialize(life, pos, vel);
+		num++;
+	}
+}
+
+void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
+{
+	const float RAD = XM_PI * 2;
+
+	dir.Normalize();
+
+	auto cross0 = Vector3(dir.y, -dir.x, 0); // 直交するベクトル
+
+	int num = 0;
+	int range = 100;
+	//int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
+	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
+	{
+		auto d = dir;
+		d *= sinf(rand()) + 1.f;
+
+		auto cross = cross0;
+		cross *= sinf(rand());
+
+		//life,pos,vel の値でm_effectを初期化する
+		(*itr)->Initialize(life, pos, d + cross);
+		num++;
 	}
 }
 

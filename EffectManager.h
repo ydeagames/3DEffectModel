@@ -18,7 +18,9 @@ class EffectManager
 public:
 	void Create(DX::DeviceResources* deviceResources, const std::wstring& image);
 	//Create()‚Å‘S•”ˆ—‚Í’·‚¢‚Ì‚Å•ªŠ„
-	void Initialize(float life,DirectX::SimpleMath::Vector3 pos);
+	void Initialize(float life, DirectX::SimpleMath::Vector3 pos);
+	void InitializeAverage(float life, DirectX::SimpleMath::Vector3 pos);
+	void InitializeCone(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 dir);
 
 	void Update(DX::StepTimer timer);
 	void Render();

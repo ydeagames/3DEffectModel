@@ -26,6 +26,7 @@ public:
 protected:
 
 	void Draw();
+	void Restart();
 
 	DX::StepTimer                           m_timer;
 	DX::DeviceResources*			m_deviceResources;
@@ -44,10 +45,14 @@ protected:
 	ID3D11ShaderResourceView* m_texture;
 	DirectX::SimpleMath::Vector3		m_camera;
 
+	// Transform
 	DirectX::SimpleMath::Vector3		m_position;
 	DirectX::SimpleMath::Vector3		m_velocity;
 	float								m_life;
 
-
+	// スタートTransform
+	DirectX::SimpleMath::Vector3		m_startPosition;
+	DirectX::SimpleMath::Vector3		m_startVelocity;
+	float								m_startLife;
 
 };
