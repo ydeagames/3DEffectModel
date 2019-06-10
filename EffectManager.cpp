@@ -124,6 +124,24 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 	}
 }
 
+void EffectManager::InitializeRandom(float life, Vector3 centerPos)
+{
+	int num = 0;
+	int range = 100;
+	//int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
+	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
+	{
+		auto pos = Vector3(((rand() % (range * 2)) - range) / (float)range, ((rand() % (range * 2)) - range) / (float)range, 0) * 3.f;
+		auto vel = (centerPos - pos) / life;
+		vel *= ((rand() % range) / (float)range) * .0055f + .001f;
+
+		//life,pos,vel ‚Ì’l‚Åm_effect‚ð‰Šú‰»‚·‚é
+		(*itr)->Initialize(life + (((rand() % (range * 2)) - range) / (float)range) * .25f, pos + Vector3::Backward * (((rand() % (range * 2)) - range) / (float)range * .3f), vel);
+		(*itr)->m_life = (*itr)->m_startLife * ((rand() % range) / (float)range);
+		num++;
+	}
+}
+
 
 void EffectManager::Update(DX::StepTimer timer)
 {

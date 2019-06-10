@@ -82,7 +82,8 @@ void MyEffect::Render()
 	//Vector3 length = m_position - m_startPosition;
 	//auto sizeOverLength = 1 - length.LengthSquared() / (4 * 4);
 	//m_world = Matrix::CreateScale(1)* Matrix::CreateRotationY(XMConvertToRadians(180)) * Matrix::CreateBillboard(m_position, Vector3::Zero, Vector3::UnitY) ;
-	m_world = Matrix::CreateBillboard(m_position, m_camera, Vector3::UnitY) ;
+	//m_world = Matrix::CreateBillboard(m_position, m_camera, Vector3::UnitY) ;
+	m_world = Matrix::CreateBillboard(m_position, Vector3(m_position.x, m_position.y, m_camera.z > 0 ? 5 : -5), Vector3::UnitY) ;
 	Draw();
 
 }
@@ -113,7 +114,7 @@ void MyEffect::Draw()
 	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
 	ID3D11SamplerState* samplers[1] = { m_states->LinearClamp() };
 	context->PSSetSamplers(0, 1, samplers);
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
+	ID3D11BlendState* blendstate = m_states->Additive();
 
 	CD3D11_DEFAULT default_state;
 
@@ -126,12 +127,18 @@ void MyEffect::Draw()
 	// 透明判定処理
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 	// 深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	// カリングは左周り
 	context->RSSetState(m_states->CullCounterClockwise());
 	// 不透明のみ描画する設定
 	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
 	m_batchEffect->SetReferenceAlpha(0);
+	float lifeprogress = 1 - m_life / m_startLife;
+	float lifesin = (-std::cos(lifeprogress * 3 * XM_2PI) + 1) / 2.f;
+	float halfcirc = std::sinf(lifeprogress * XM_PI);
+	//std::cout << lifeprogress << " : " << lifesin << " : " << halfcirc << std::endl;
+	m_batchEffect->SetAlpha((lifesin + halfcirc)/4.f+0.4f);
+	//m_batchEffect->SetAlpha(.6f);
 	m_batchEffect->SetWorld(m_world);
 	m_batchEffect->SetView(m_view);
 	m_batchEffect->SetProjection(m_proj);

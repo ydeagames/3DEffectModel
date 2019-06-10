@@ -48,11 +48,13 @@ protected:
 	// Transform
 	DirectX::SimpleMath::Vector3		m_position;
 	DirectX::SimpleMath::Vector3		m_velocity;
-	float								m_life;
 
 	// スタートTransform
 	DirectX::SimpleMath::Vector3		m_startPosition;
 	DirectX::SimpleMath::Vector3		m_startVelocity;
+
+public:
+	float								m_life;
 	float								m_startLife;
 
 };
