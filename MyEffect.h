@@ -23,6 +23,12 @@ public:
 	void Render();
 
 	void SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
+	void SetGravity(bool gravity) { m_isGravity = gravity; }
+	void SetLoop(bool loop) { m_isLoop = loop; }
+
+	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; };
+
 protected:
 
 	void Draw();
@@ -53,8 +59,11 @@ protected:
 	DirectX::SimpleMath::Vector3		m_startPosition;
 	DirectX::SimpleMath::Vector3		m_startVelocity;
 
+	bool								m_isLoop;
+
 public:
 	float								m_life;
 	float								m_startLife;
 
+	bool								m_isGravity;
 };

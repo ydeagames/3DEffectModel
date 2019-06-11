@@ -22,6 +22,7 @@ public:
 	void InitializeAverage(float life, DirectX::SimpleMath::Vector3 pos);
 	void InitializeCone(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 dir);
 	void InitializeRandom(float life, DirectX::SimpleMath::Vector3 centerPos);
+	void InitializeBoom(float life, DirectX::SimpleMath::Vector3 centerPos);
 
 
 	void Update(DX::StepTimer timer);

@@ -84,4 +84,6 @@ private:
 
 	std::unique_ptr<DebugCamera> m_debugCamera;
 	std::unique_ptr<GridFloor> m_gridFloor;
+
+	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 };

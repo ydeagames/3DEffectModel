@@ -18,7 +18,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 
-void MyEffect::Create(DX::DeviceResources* deviceResources,ID3D11ShaderResourceView* texture,AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch, ID3D11InputLayout* inputLayout)
+void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResourceView* texture, AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch, ID3D11InputLayout* inputLayout)
 {
 	m_deviceResources = deviceResources;
 	auto device = m_deviceResources->GetD3DDevice();
@@ -33,6 +33,8 @@ void MyEffect::Create(DX::DeviceResources* deviceResources,ID3D11ShaderResourceV
 	m_states = std::make_unique<CommonStates>(device);
 	// テクスチャの取得
 	m_texture = texture;
+
+	m_isLoop = true;
 }
 
 void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity)
@@ -42,20 +44,21 @@ void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX:
 	//velocity *= .04f;
 	m_startVelocity = m_velocity = velocity;
 	m_startLife = m_life = life;
-
 }
 
 void MyEffect::Update(DX::StepTimer timer)
 {
 	float time = float(m_timer.GetElapsedSeconds());
 	m_timer = timer;
-	
+
 
 	m_position += m_velocity;
+	if (m_isGravity)
+		m_velocity += Vector3::Down * .0098f;
 
 	m_life -= time;
 
-	if (m_life < 0)
+	if (m_isLoop && m_life < 0)
 	{
 		Restart();
 		return;
@@ -83,7 +86,7 @@ void MyEffect::Render()
 	//auto sizeOverLength = 1 - length.LengthSquared() / (4 * 4);
 	//m_world = Matrix::CreateScale(1)* Matrix::CreateRotationY(XMConvertToRadians(180)) * Matrix::CreateBillboard(m_position, Vector3::Zero, Vector3::UnitY) ;
 	//m_world = Matrix::CreateBillboard(m_position, m_camera, Vector3::UnitY) ;
-	m_world = Matrix::CreateBillboard(m_position, Vector3(m_position.x, m_position.y, m_camera.z > 0 ? 5 : -5), Vector3::UnitY) ;
+	m_world = Matrix::CreateBillboard(m_position, Vector3(m_position.x, m_position.y, m_camera.z > 0 ? 5 : -5), Vector3::UnitY);
 	Draw();
 
 }
@@ -105,7 +108,7 @@ void MyEffect::Draw()
 
 	// 頂点情報
 	VertexPositionTexture vertex[4] =
-	{	
+	{
 		VertexPositionTexture(Vector3(0.5f, 0.5f, 0.0f), Vector2(0.0f, 0.0f)),
 		VertexPositionTexture(Vector3(-0.5f, 0.5f, 0.0f), Vector2(1.0f, 0.0f)),
 		VertexPositionTexture(Vector3(-0.5f, -0.5f, 0.0f), Vector2(1.0f, 1.0f)),
@@ -137,7 +140,7 @@ void MyEffect::Draw()
 	float lifesin = (-std::cos(lifeprogress * 3 * XM_2PI) + 1) / 2.f;
 	float halfcirc = std::sinf(lifeprogress * XM_PI);
 	//std::cout << lifeprogress << " : " << lifesin << " : " << halfcirc << std::endl;
-	m_batchEffect->SetAlpha((lifesin + halfcirc)/4.f+0.4f);
+	m_batchEffect->SetAlpha((lifesin + halfcirc) / 4.f + 0.4f);
 	//m_batchEffect->SetAlpha(.6f);
 	m_batchEffect->SetWorld(m_world);
 	m_batchEffect->SetView(m_view);
@@ -148,6 +151,6 @@ void MyEffect::Draw()
 
 	// 半透明部分を描画
 	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0],vertex[1],vertex[2],vertex[3]);
+	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
 	m_batch->End();
 }

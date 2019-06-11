@@ -138,6 +138,29 @@ void EffectManager::InitializeRandom(float life, Vector3 centerPos)
 		//life,pos,vel ‚Ì’l‚Åm_effect‚ð‰Šú‰»‚·‚é
 		(*itr)->Initialize(life + (((rand() % (range * 2)) - range) / (float)range) * .25f, pos + Vector3::Backward * (((rand() % (range * 2)) - range) / (float)range * .3f), vel);
 		(*itr)->m_life = (*itr)->m_startLife * ((rand() % range) / (float)range);
+		(*itr)->SetGravity(false);
+		(*itr)->SetLoop(true);
+		num++;
+	}
+}
+
+void EffectManager::InitializeBoom(float life, DirectX::SimpleMath::Vector3 centerPos)
+{
+	int num = 0;
+	int range = 100;
+	//int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
+	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
+	{
+		auto pos = (*itr)->GetPosition();
+		auto vel = - (centerPos - pos) / life;
+		vel *= ((rand() % range) / (float)range) * .5f;
+		vel += Vector3::Backward * (((rand() % (range * 2)) - range) / (float)range) * .15f;
+
+		//life,pos,vel ‚Ì’l‚Åm_effect‚ð‰Šú‰»‚·‚é
+		(*itr)->Initialize(life + (((rand() % (range * 2)) - range) / (float)range) * .25f, pos + Vector3::Backward * (((rand() % (range * 2)) - range) / (float)range * .3f), vel);
+		(*itr)->m_life = (*itr)->m_startLife * ((rand() % range) / (float)range);
+		(*itr)->SetGravity(true);
+		(*itr)->SetLoop(false);
 		num++;
 	}
 }

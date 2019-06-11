@@ -96,6 +96,18 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_myEffect->m_acceleration.Normalize();
 	//m_myEffect->m_acceleration *= -.001f;
 
+	static bool flag = true;
+	m_tracker.Update(Keyboard::Get().GetState());
+	if (m_tracker.IsKeyPressed(Keyboard::Space))
+	{
+		if (flag)
+			m_effectManager->InitializeBoom(3, Vector3::Zero);
+		else
+			m_effectManager->InitializeRandom(3, Vector3::Zero);
+
+		flag = !flag;
+	}
+
 	m_effectManager->SetRenderState(camPos, m_view, m_proj);
 	m_effectManager->Update(timer);
 }
