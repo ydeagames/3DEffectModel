@@ -12,6 +12,8 @@
 #include <CommonStates.h>
 #include <Model.h>
 
+#include "Trigger.h"
+
 //class ModelObject;
 class EffectManager;
 class GridFloor;
@@ -86,4 +88,10 @@ private:
 	std::unique_ptr<GridFloor> m_gridFloor;
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
+
+	HWND m_window;
+
+public:
+	static Trigger<bool> s_exitrequest;
+	static Trigger<bool> s_exitaccept;
 };

@@ -23,6 +23,10 @@
     <ClInclude Include="GridFloor.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="Trigger.h" />
+    <ClInclude Include="Optional.h" />
+    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -36,6 +40,7 @@
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="GridFloor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

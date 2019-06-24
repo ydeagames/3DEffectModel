@@ -238,6 +238,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+	case WM_CLOSE:
+		if (!Game::s_exitaccept)
+		{
+			Game::s_exitrequest = true;
+			return TRUE;
+		}
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

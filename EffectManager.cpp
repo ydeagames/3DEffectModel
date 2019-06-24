@@ -29,7 +29,7 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const std::wst
 	// エフェクトクリア
 	m_effectList.clear();
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 300; i++)
 	{
 		// エフェクト
 		auto effect = new MyEffect();
@@ -131,7 +131,7 @@ void EffectManager::InitializeRandom(float life, Vector3 centerPos)
 	//int sqrSize = static_cast<int>(std::sqrtf(m_effectList.size()));
 	for (auto itr = m_effectList.begin(); itr != m_effectList.end(); ++itr)
 	{
-		auto pos = Vector3(((rand() % (range * 2)) - range) / (float)range, ((rand() % (range * 2)) - range) / (float)range, 0) * 3.f;
+		auto pos = Vector3(((rand() % (range * 2)) - range) / (float)range, ((rand() % (range * 2)) - range) / (float)range, 0) * 5.f;
 		auto vel = (centerPos - pos) / life;
 		vel *= ((rand() % range) / (float)range) * .0055f + .001f;
 

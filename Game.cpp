@@ -11,6 +11,8 @@
 #include "DebugCamera.h"
 #include "GridFloor.h"
 
+#include "Timer.h"
+
 extern void ExitGame();
 
 // namespaceを追加
@@ -18,6 +20,9 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 using Microsoft::WRL::ComPtr;
+
+Trigger<bool> Game::s_exitrequest = false;
+Trigger<bool> Game::s_exitaccept = false;
 
 Game::Game() noexcept(false)
 {
@@ -35,6 +40,8 @@ Game::~Game() noexcept(false)
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+	m_window = window;
+
 	m_deviceResources->SetWindow(window, width, height);
 
 	// マウスの作成
@@ -96,20 +103,37 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_myEffect->m_acceleration.Normalize();
 	//m_myEffect->m_acceleration *= -.001f;
 
-	static bool flag = true;
-	m_tracker.Update(Keyboard::Get().GetState());
-	if (m_tracker.IsKeyPressed(Keyboard::Space))
+	//m_tracker.Update(Keyboard::Get().GetState());
+	//if (m_tracker.IsKeyPressed(Keyboard::Space))
+	static Timer tm = Timer(timer);
+	if (s_exitrequest.changed())
 	{
+		bool flag = s_exitrequest.poll();
 		if (flag)
+		{
 			m_effectManager->InitializeBoom(3, Vector3::Zero);
+			tm.Start(1);
+		}
 		else
 			m_effectManager->InitializeRandom(3, Vector3::Zero);
-
-		flag = !flag;
+	}
+	if (!tm.IsPaused() && tm.IsFinished())
+	{
+		s_exitaccept = true;
+		if (s_exitaccept.changed())
+			PostQuitMessage(0);
 	}
 
 	m_effectManager->SetRenderState(camPos, m_view, m_proj);
 	m_effectManager->Update(timer);
+
+	//{
+	//	bool b = ((m_timer.GetTotalTicks() / 8000000l) % 2 == 0);
+	//	if (b)
+	//		SetWindowTextW(m_window, L"[[Spaceキーで爆発]] - YdeaGames");
+	//	else
+	//		SetWindowTextW(m_window, L"  Spaceキーで爆発   - YdeaGames");
+	//}
 }
 #pragma endregion
 
@@ -131,7 +155,7 @@ void Game::Render()
 	// TODO: Add your rendering code here.
 	context;
 
-	m_gridFloor->draw(context, m_view, m_proj);
+	//m_gridFloor->draw(context, m_view, m_proj);
 
 	m_effectManager->Render();
 
@@ -151,7 +175,7 @@ void Game::Clear()
 	auto renderTarget = m_deviceResources->GetRenderTargetView();
 	auto depthStencil = m_deviceResources->GetDepthStencilView();
 
-	context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
+	context->ClearRenderTargetView(renderTarget, Colors::Black);
 	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
 
